@@ -12,11 +12,10 @@ using UnluCoWeekOneHW.Repositories;
 namespace UnluCoWeekOneHW.Controllers
 {
     [Route("api/[controller]")]
-
     [ApiController]
     public class ScientistsController : ControllerBase
     {
-        ScientistRepository _scientistRepository;
+        
         public List<Scientist> scientistsDb = new List<Scientist>()
         {
             new Scientist
@@ -81,6 +80,15 @@ namespace UnluCoWeekOneHW.Controllers
 
                 return NotFound(Messages.WrongRequest);           
         }
+        [HttpGet("GetByName/{name}")]
+        [ProducesResponseType(typeof(Scientist), (int)HttpStatusCode.OK)]
+        public ActionResult<IEnumerable<Scientist>> GetByName(string name)
+        {
+            string _name = name.Substring(0, 1).ToUpper() + name.Substring(1);
+            var scientistList = scientistsDb.Where(a => a.ScientistName == _name).ToList<Scientist>();
+            return Ok(scientistList);
+        }
+
         [HttpPost("SuggestNewScientist")]
         [ProducesResponseType((int)HttpStatusCode.BadRequest)]
         [ProducesResponseType(typeof(Scientist), (int)HttpStatusCode.Created)]
@@ -94,7 +102,7 @@ namespace UnluCoWeekOneHW.Controllers
             scientistsDb.Add(newscientist);          
             return StatusCode(201);
         }
-        [HttpDelete("delete/{id}")]
+        [HttpDelete("DeleteById/{id}")]
         public IActionResult DeleteScientistById (int id)
         {
             var scientist = scientistsDb.Where(a => a.ScientistId == id).SingleOrDefault();
