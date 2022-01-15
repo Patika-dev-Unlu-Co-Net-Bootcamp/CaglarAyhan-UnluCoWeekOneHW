@@ -78,6 +78,7 @@ namespace UnluCoWeekOneHW.Controllers
                 return Ok(scientistList);
             }
             else
+
                 return NotFound(Messages.WrongRequest);           
         }
         [HttpPost("SuggestNewScientist")]
