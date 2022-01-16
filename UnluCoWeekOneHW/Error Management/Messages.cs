@@ -10,6 +10,6 @@ namespace UnluCoWeekOneHW.Error_Management
         public static string EmptyResults = "Herhangi bir veri bulunamadı";
         public static string WrongRequest = "Id numarası bulunamadı";
         public static string updated(string name,int id) { return $"{id}id numaralı verinin ismi {name} olarak değiştirilmiştir "; }
-        public static string WrongRequestById(int id) { return $"{id}id numaralısı sistemde bulunamamıstır." }
+        public static string WrongRequestById(int id) { return $"{id}id numaralısı sistemde bulunamamıstır."; }
     }
 }
