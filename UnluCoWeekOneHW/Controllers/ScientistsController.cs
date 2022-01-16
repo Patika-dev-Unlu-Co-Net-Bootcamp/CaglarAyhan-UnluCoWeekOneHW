@@ -7,7 +7,7 @@ using System.Threading.Tasks;
 
 using UnluCoWeekOneHW.Entities;
 using UnluCoWeekOneHW.Error_Management;
-using UnluCoWeekOneHW.Repositories;
+
 
 namespace UnluCoWeekOneHW.Controllers
 {
@@ -56,8 +56,7 @@ namespace UnluCoWeekOneHW.Controllers
         [ProducesResponseType(typeof(Scientist), (int)HttpStatusCode.OK)]
         [ProducesResponseType((int)HttpStatusCode.BadRequest)]
         public ActionResult<IEnumerable<Scientist>> GetAll()
-        {
-            
+        { 
             var scientistList = scientistsDb.OrderBy(a => a.ScientistName).ToList();
             if (scientistList.Count > 0)
             {
@@ -66,7 +65,8 @@ namespace UnluCoWeekOneHW.Controllers
             else
                 return BadRequest(Messages.EmptyResults);           
         }
-        [HttpGet("{id}")]
+
+        [HttpGet("GetById/{id}")]
         [ProducesResponseType((int)HttpStatusCode.NotFound)]
         [ProducesResponseType(typeof(Scientist), (int)HttpStatusCode.OK)]
         public ActionResult<IEnumerable<Scientist>> GetById(int id)
@@ -80,16 +80,18 @@ namespace UnluCoWeekOneHW.Controllers
 
                 return NotFound(Messages.WrongRequest);           
         }
-        [HttpGet("GetByName/{name}")]
+
+        //İsim ile arama yapılıyor. Buraya yanlış yazım ve düzeltme algoritması eklenecek. Algoritma oluşturuluyor.
+        [HttpGet("getByName/{name}")]
         [ProducesResponseType(typeof(Scientist), (int)HttpStatusCode.OK)]
         public ActionResult<IEnumerable<Scientist>> GetByName(string name)
         {
-            string _name = name.Substring(0, 1).ToUpper() + name.Substring(1);
+            string _name = name.Substring(0, 1).ToUpper() + name.Substring(1).ToLower();
             var scientistList = scientistsDb.Where(a => a.ScientistName == _name).ToList<Scientist>();
             return Ok(scientistList);
         }
 
-        [HttpPost("SuggestNewScientist")]
+        [HttpPost("suggestNewScientist")]
         [ProducesResponseType((int)HttpStatusCode.BadRequest)]
         [ProducesResponseType(typeof(Scientist), (int)HttpStatusCode.Created)]
         public IActionResult SuggestScientist([FromForm] Scientist newscientist)
@@ -102,16 +104,16 @@ namespace UnluCoWeekOneHW.Controllers
             scientistsDb.Add(newscientist);          
             return StatusCode(201);
         }
+
         [HttpDelete("DeleteById/{id}")]
+        [ProducesResponseType(typeof(Scientist), (int)HttpStatusCode.OK)]
         public IActionResult DeleteScientistById (int id)
         {
             var scientist = scientistsDb.Where(a => a.ScientistId == id).SingleOrDefault();
-
             scientistsDb.Remove(scientist);
-
             return Ok($"{id}'id numarasına sahip veri silinmiştir.");
         }
-        [HttpPatch("{id}/update")]
+        [HttpPatch("update/{id}")]
         public IActionResult UpdateScientistName(int id, [FromBody] Scientist updatedscientistName)
         {
             var sci = scientistsDb.SingleOrDefault(x=>x.ScientistId==id);
@@ -123,7 +125,7 @@ namespace UnluCoWeekOneHW.Controllers
             return Ok();
         }
         
-        [HttpPut]
+        [HttpPut("Update")]
         [ProducesResponseType((int)HttpStatusCode.BadRequest)]
         [ProducesResponseType((int)HttpStatusCode.NotModified)]
         [ProducesResponseType(typeof(Scientist), (int)HttpStatusCode.OK)]
